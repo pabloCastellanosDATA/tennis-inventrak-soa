@@ -1,0 +1,69 @@
+### InvenTrak Connect – pruebas rápidas
+### Abrir en Visual Studio / VS Code (extensión REST Client) y pulsar "Send Request"
+@baseUrl = http://localhost:5080
+@apiKey = tennis-2026
+
+### Salud
+GET {{baseUrl}}/health
+
+### Registro central de servicios
+GET {{baseUrl}}/api/v1/catalogo
+
+### Contrato de un servicio
+GET {{baseUrl}}/api/v1/catalogo/ServicioExistencias
+
+### Existencias de una referencia y talla
+GET {{baseUrl}}/api/v1/existencias?referencia=CAL-021&talla=40
+
+### Disponibilidad para la tienda en línea
+GET {{baseUrl}}/api/v1/disponibilidad-en-linea/CAL-021
+
+### Registrar venta en el POS
+POST {{baseUrl}}/api/v1/ventas
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{
+  "referencia": "CAL-021",
+  "talla": "40",
+  "sede": "TIENDA-NORTE",
+  "cantidad": 1,
+  "canal": "POS"
+}
+
+### Crear reserva de un pedido en línea
+POST {{baseUrl}}/api/v1/reservas
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{
+  "pedido": "WEB-1001",
+  "referencia": "JEA-014",
+  "talla": "M",
+  "sede": "BODEGA-CENTRAL",
+  "cantidad": 2,
+  "minutosVigencia": 30
+}
+
+### Confirmar la reserva 1
+POST {{baseUrl}}/api/v1/reservas/1/confirmar
+X-Api-Key: {{apiKey}}
+
+### Registrar entrada de mercancía
+POST {{baseUrl}}/api/v1/entradas
+Content-Type: application/json
+X-Api-Key: {{apiKey}}
+
+{
+  "ordenCompra": "OC-2026-118",
+  "referencia": "CAL-021",
+  "talla": "40",
+  "sede": "TIENDA-NORTE",
+  "cantidad": 12
+}
+
+### Alertas de reposición
+GET {{baseUrl}}/api/v1/alertas?sede=TIENDA-NORTE
+
+### Auditoría
+GET {{baseUrl}}/api/v1/movimientos?limite=10
