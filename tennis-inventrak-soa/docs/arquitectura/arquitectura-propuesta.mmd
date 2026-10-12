@@ -1,0 +1,43 @@
+flowchart LR
+    subgraph C["Sistemas consumidores"]
+        POS["Sistema POS<br/>(tienda física)"]
+        WEB["Tienda en línea<br/>(comercio electrónico)"]
+        BOD["Bodega / módulo de<br/>pedidos a proveedores"]
+        GER["Gerencia"]
+    end
+
+    ADP["Adaptador POS<br/>(Legacy Wrapper)"]
+
+    subgraph API["InvenTrak Connect — API REST /api/v1"]
+        SEG["Seguridad<br/>X-Api-Key"]
+        S1["ServicioExistencias"]
+        S2["ServicioDisponibilidadEnLinea"]
+        S3["ServicioVentasPresenciales"]
+        S4["ServicioReservasPedido"]
+        S5["ServicioEntradasMercancia"]
+        S6["ServicioAlertasReposicion"]
+        REG["RegistroCentralServicios<br/>/catalogo<br/>(Metadata Centralization)"]
+        LOG["InventarioService<br/>lógica centralizada<br/>(Logic Centralization)"]
+    end
+
+    DB[("Base de datos SQLite<br/>Fuente autorizada del stock<br/>Existencias · Reservas · Movimientos")]
+    HC["Hoja de cálculo<br/>(solo carga inicial)"]
+
+    POS --> ADP --> SEG
+    WEB --> SEG
+    BOD --> SEG
+    GER --> SEG
+    SEG --> S1 & S2 & S3 & S4 & S5 & S6
+    S1 & S2 & S3 & S4 & S5 & S6 --> LOG --> DB
+    REG --> DB
+    C -. "consultan antes de integrar" .-> REG
+    HC -. "migración única" .-> DB
+
+    classDef consumidor fill:#E8F1FB,stroke:#2F6DB5,color:#123
+    classDef servicio fill:#EAF7EE,stroke:#2E8B57,color:#123
+    classDef registro fill:#FFF4E0,stroke:#C98200,color:#123
+    classDef legado fill:#F3F3F3,stroke:#888,color:#333,stroke-dasharray: 4 3
+    class POS,WEB,BOD,GER consumidor
+    class S1,S2,S3,S4,S5,S6,LOG,SEG servicio
+    class REG registro
+    class HC,ADP legado
